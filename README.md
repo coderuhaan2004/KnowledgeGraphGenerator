@@ -40,7 +40,7 @@ A tool that extracts key entities and their relationships from text and visualiz
 knowledge-graph-generator/
 │
 ├── README.md                     # This readme file
-├── knowledge_graph_generator.ipynb  # Example Colab notebook
+├── KGG.ipynb  # Example Colab notebook
 └── requirements.txt              # List of dependencies
 ```
 
