@@ -1,15 +1,47 @@
-# Knowledge Graph Generator on Google Colab
+# Knowledge Graph Generator in Google Colab
+
 A comprehensive knowledge graph generator using LLM.
+A tool that extracts key entities and their relationships from text and visualizes them in an interactive knowledge graph directly in a Google Colab notebook using PyVis.
 
-1. Open ```KGG.ipynb``` file on google colab and import ```requirements.txt``` file in google colab.
-2. Run all the cells.
+## Table of Contents
 
-![image](https://github.com/coderuhaan2004/KnowledgeGraphGenerator/assets/135970602/e6ef33a6-1818-4c16-94a5-dbfe81a99fb6)
+- [Applications](#applications)
+- [Features](#features)
+- [Setup & Usage](#setup-&-usage)
+- [Project Structure](#project-structure)
 
-Large Language Model used: https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca
-![image](https://github.com/coderuhaan2004/KnowledgeGraphGenerator/assets/135970602/2a996b97-098a-42c3-9cdd-9997f7a332f6)
+## Applications
 
-Graph visualizer used: Pyvis
-![image](https://github.com/coderuhaan2004/KnowledgeGraphGenerator/assets/135970602/f24b933d-a733-4538-b649-bf635a5cd179)
+1. ### Information Retrieval and Organization
+- Data Management: Organize large volumes of textual data into structured, interconnected entities. Useful for creating databases or enhancing existing ones.
+- Content Summarization: Summarize key information from long documents or articles by extracting main entities and their relationships.
+
+2. ### Education
+- Teaching Aid: Assist educators in creating interactive teaching materials by visually representing complex subjects and their interrelations.
+- Student Projects: Provide a tool for students to visualize and present their research or project findings.
+
+3. ### Knowledge Discovery
+- Research: Aid researchers in identifying relationships between different concepts, facilitating new insights and hypothesis generation.
+- Literature Reviews: Summarize findings from numerous studies by mapping out key terms and their connections.
+
+## Features
+
+- **Text Analysis**: Extracts entities and their relationships from input text.
+- **Interactive Visualization**: Generates and displays a knowledge graph using PyVis.
+- **Colab Integration**: Fully integrated into Google Colab for easy use and visualization.
+
+## Setup & Usage
+
+- Open ```KGG.ipynb``` file on google colab and import ```requirements.txt``` file in google colab.
+- Run all the cells.
+
+## Project Structure
+```
+knowledge-graph-generator/
+│
+├── README.md                     # This readme file
+├── knowledge_graph_generator.ipynb  # Example Colab notebook
+└── requirements.txt              # List of dependencies
+```
 
 
