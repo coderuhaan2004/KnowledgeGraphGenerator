@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Knowledge Graph Generator Project Report</title>
+    <link rel="stylesheet" href="https://latex.vercel.app/style.min.css" />
+    <link rel="stylesheet" href="https://latex.vercel.app/prism/prism.css">
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+</head>
+
+<body class="text-justify latex-auto">
+    <header>
+        <h1>Knowledge Graph Generator</h1>
+        <p class="author">
+            Ruhaan Choudhary<br>
+            Ritesh Kumar
+        </p>
+        <p style="text-align:center;">
+            <a href="https://github.com/coderuhaan2004/KnowledgeGraphGenerator" target="_blank">GitHub Repository</a>
+        </p>
+    </header>
+
+    <div class="abstract">
+        <h2>Abstract</h2>
+        <p>
+            The Knowledge Graph Generator (KGG) is a tool designed to extract structured information from unstructured text and visualize it as a knowledge graph. Leveraging large language models and modern visualization libraries, KGG enables users to input any text and receive an interactive graph of entities and their relationships. The project is implemented in Python using HuggingFace Transformers, PyVis, and Google Colab for an accessible and interactive experience.
+        </p>
+    </div>
+
+    <nav role="navigation" class="toc">
+        <h2>Contents</h2>
+        <ol>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#approach">Approach & Methodology</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#applications">Applications</a></li>
+            <li><a href="#algorithms">Algorithms & Implementation</a></li>
+            <li><a href="#ui">User Interface</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+            <li><a href="#bibliography">Bibliography</a></li>
+        </ol>
+    </nav>
+
+    <main>
+        <article>
+            <h2 id="introduction">Introduction</h2>
+            <p>
+                The Knowledge Graph Generator (KGG) is an AI-powered application that transforms unstructured text into a structured knowledge graph. By identifying key entities and their relationships, KGG provides a visual and interactive representation of information, aiding in understanding, exploration, and further analysis. The project is built using Python, HuggingFace Transformers, and PyVis, and is designed to run seamlessly in Google Colab.
+            </p>
+
+            <h2 id="approach">Approach & Methodology</h2>
+            <p>
+                The core approach of KGG is unique in that, instead of relying on external APIs to access large language models (LLMs), the LLM is loaded and run entirely <b>locally</b> on the user's machine. This ensures data privacy, removes dependency on internet connectivity, and avoids API usage costs. However, running a state-of-the-art LLM such as Open-Orca/Mistral-7B-OpenOrca locally presents significant hardware challenges, as these models typically require more than 15GB of GPU memory.
+            </p>
+            <p>
+                To overcome this, <b>quantization</b> techniques are employed. Specifically, the model is loaded using <code>BitsAndBytesConfig</code> with 4-bit quantization (nf4), drastically reducing the memory footprint and enabling efficient inference even on consumer-grade GPUs. This allows the entire pipeline—from prompt engineering to entity extraction and graph visualization—to be executed locally, making the solution both powerful and accessible.
+            </p>
+            <ol>
+                <li><b>Model Loading and Quantization:</b> The Open-Orca/Mistral-7B-OpenOrca model is loaded locally using HuggingFace Transformers with 4-bit quantization (nf4) for efficient inference. This is achieved using the <code>BitsAndBytesConfig</code> for memory and speed optimization, making it feasible to run the model on hardware with limited GPU resources.</li>
+                <li><b>Prompt Engineering:</b> A system prompt instructs the model to extract entities and relationships from the context and output them in a JSON format with fields: <code>node1</code>, <code>node2</code>, and <code>relationship</code>.</li>
+                <li><b>Text Processing:</b> The user-provided text is formatted into a prompt and passed to the locally running model. The model generates a response, which is parsed to extract the JSON array of relationships.</li>
+                <li><b>Knowledge Graph Construction:</b> The extracted entities and relationships are used to build a graph using PyVis, where nodes represent entities and edges represent relationships.</li>
+                <li><b>Visualization:</b> The resulting graph is rendered as interactive HTML, allowing users to explore the knowledge graph visually within the notebook or exported as a standalone HTML file.</li>
+            </ol>
+
+            <h2 id="features">Features</h2>
+            <ul>
+                <li><b>Automated Entity and Relationship Extraction:</b> Utilizes a large language model to identify and extract entities and their relationships from arbitrary text.</li>
+                <li><b>Interactive Visualization:</b> Generates an interactive knowledge graph using PyVis, allowing users to explore nodes and edges dynamically.</li>
+                <li><b>Efficient Model Inference:</b> Employs 4-bit quantization for the language model, reducing memory usage and improving inference speed.</li>
+                <li><b>Google Colab Integration:</b> Designed for easy use in Google Colab, with a user-friendly interface for input and visualization.</li>
+                <li><b>Customizable Prompts:</b> The prompt engineering approach allows for flexible extraction of different types of relationships as needed.</li>
+            </ul>
+
+            <h2 id="applications">Applications</h2>
+            <ul>
+                <li><b>Information Retrieval and Organization</b>
+                    <ul>
+                        <li><b>Data Management:</b> Organize large volumes of textual data into structured, interconnected entities. Useful for creating databases or enhancing existing ones.</li>
+                        <li><b>Content Summarization:</b> Summarize key information from long documents or articles by extracting main entities and their relationships.</li>
+                    </ul>
+                </li>
+                <li><b>Education</b>
+                    <ul>
+                        <li><b>Teaching Aid:</b> Assist educators in creating interactive teaching materials by visually representing complex subjects and their interrelations.</li>
+                        <li><b>Student Projects:</b> Provide a tool for students to visualize and present their research or project findings.</li>
+                    </ul>
+                </li>
+                <li><b>Knowledge Discovery</b>
+                    <ul>
+                        <li><b>Research:</b> Aid researchers in identifying relationships between different concepts, facilitating new insights and hypothesis generation.</li>
+                        <li><b>Literature Reviews:</b> Summarize findings from numerous studies by mapping out key terms and their connections.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2 id="algorithms">Algorithms & Implementation</h2>
+            <h3>Model Loading and Quantization</h3>
+            <pre><code class="language-python">
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_use_double_quant=True,
+)
+
+model_name = "Open-Orca/Mistral-7B-OpenOrca"
+model = AutoModelForCausalLM.from_pretrained(model_name, quantization_config=bnb_config)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model.config.use_cache = False
+model.config.pretraining_tp = 1
+            </code></pre>
+
+            <h3>Prompt Engineering and Extraction</h3>
+            <pre><code class="language-python">
+def getprompt(text):
+    SYS_PROMPT = (
+        "You are an AI assistant tasked with extracting structured information from the context to create a knowledge graph. "
+        "Your goal is to identify key entities and their relationships in the context and present this information in a JSON format "
+        "with fields: 'node1', 'node2', and 'relationship'."
+    )
+    USER_PROMPT = f"context: ```{text}``` \\n\\n output: "
+    PROMPT = f"{SYS_PROMPT}\\n\\n{USER_PROMPT}"
+    return PROMPT
+
+def function(text):
+    prompt = getprompt(text)
+    inputs = tokenizer.encode(prompt, return_tensors="pt")
+    outputs = model.generate(inputs, max_length=1024, num_return_sequences=1)
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    json_response = response.split("[")[1].split("]")[0]
+    json_response = "[\\n" + json_response + "]"
+    json_response = json.loads(json_response)
+    return json_response
+            </code></pre>
+
+            <h3>Knowledge Graph Construction and Visualization</h3>
+            <pre><code class="language-python">
+from pyvis.network import Network
+
+def generate_knowledge_graph(text):
+    data = function(text)
+    net = Network(notebook=True, directed=True, cdn_resources='remote')
+    for relation in data:
+        net.add_node(relation['node1'], label=relation['node1'], title=relation['node1'])
+        net.add_node(relation['node2'], label=relation['node2'], title=relation['node2'])
+        net.add_edge(relation['node1'], relation['node2'], title=relation['relationship'], label=relation['relationship'])
+    net.repulsion(node_distance=180, spring_length=100)
+    return net.generate_html()
+            </code></pre>
+
+            <h2 id="ui">User Interface</h2>
+            <p>
+                The user interface is implemented using HTML and JavaScript within the Colab notebook. Users can input text into a search bar, and upon clicking the search button, the knowledge graph is generated and displayed interactively. The UI is styled for clarity and ease of use, with responsive design and dynamic feedback.
+            </p>
+            <figure>
+                <img src="ui_screenshot.png" alt="Knowledge Graph Generator UI" style="width:90%;">
+                <figcaption>Knowledge Graph Generator User Interface</figcaption>
+            </figure>
+            <figure>
+                <img src="knowledgeGraph.png" alt="Example Knowledge Graph" style="width:90%;">
+                <figcaption>Example Output: Generated Knowledge Graph</figcaption>
+            </figure>
+
+            <h2 id="conclusion">Conclusion</h2>
+            <p>
+                The Knowledge Graph Generator project demonstrates the power of combining large language models with interactive visualization tools to extract and represent structured knowledge from unstructured text. By automating the process of entity and relationship extraction and providing an intuitive interface, KGG makes knowledge discovery accessible and efficient for users in research, education, and industry.
+            </p>
+
+            <h2 id="bibliography">Bibliography</h2>
+            <ul>
+                <li>Open-Orca/Mistral-7B-OpenOrca: <a href="https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca" target="_blank">HuggingFace Model Card</a></li>
+                <li>PyVis Documentation: <a href="https://pyvis.readthedocs.io/en/latest/" target="_blank">https://pyvis.readthedocs.io/en/latest/</a></li>
+                <li>HuggingFace Transformers: <a href="https://huggingface.co/docs/transformers/index" target="_blank">https://huggingface.co/docs/transformers/index</a></li>
+                <li>Google Colab: <a href="https://colab.research.google.com/" target="_blank">https://colab.research.google.com/</a></li>
+            </ul>
+        </article>
+    </main>
+</body>
+</html>
